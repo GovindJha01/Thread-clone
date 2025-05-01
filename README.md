@@ -8,25 +8,24 @@ A modern web application replicating the core functionalities of the Threads app
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## ✨ Features
 
-- **User Authentication**: Secure sign-up and login functionality.
-- **Thread Creation**: Users can initiate and participate in discussion threads.
-- **Real-time Chat**: Engage in real-time conversations within threads.
-- **Follow/Unfollow**: Follow and unfollow other users to personalize your feed.
-- **Responsive Design**: Optimized for various devices and screen sizes.
+- 🔐 User authentication (sign up, login, logout)
+- 🧵 Post threads with optional image uploads
+- ❤️ Like and comment on threads
+- 👥 Follow/unfollow other users
+- 🔍 Explore feed and user profiles
+- ☁️ Media upload with Cloudinary
+- 📱 Responsive design
 
 ## ⚙️ Tech Stack
 
 - **Frontend**: React.js
 - **Backend**: Node.js with Express.js
 - **Database**: MongoDB
-- **Real-time Communication**: Socket.io
-- **Styling**: Tailwind CSS
+- **Styling**: Material UI
+- **Media Hosting**: Cloudinary
 
 ## 🛠 Installation
 
@@ -45,3 +44,22 @@ Ensure you have the following installed:
    ```bash
    git clone https://github.com/GovindJha01/Thread-clone.git
    cd Thread-clone
+   
+2. **Install dependencies**:
+
+   ```bash
+   cd client
+   npm install
+
+   cd server
+   npm install
+   
+3. **Set up environment variables**:
+   look for .env.example for reference
+
+4. **Start the application**:
+   ```bash
+   npm run dev
+
+   
+

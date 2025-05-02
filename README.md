@@ -21,7 +21,7 @@ A modern web application replicating the core functionalities of the Threads app
 
 ## ⚙️ Tech Stack
 
-- **Frontend**: React.js
+- **Frontend**: React.js with Redux Toolkit
 - **Backend**: Node.js with Express.js
 - **Database**: MongoDB
 - **Styling**: Material UI

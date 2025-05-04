@@ -1,9 +1,12 @@
 import {
+  Box,
   Button,
   Stack,
   TextField,
   Typography,
   useMediaQuery,
+  useTheme,
+  Paper,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLoginMutation, useSigninMutation } from "../redux/service";
@@ -11,178 +14,192 @@ import { Bounce, toast } from "react-toastify";
 import Loading from "../components/common/Loading";
 
 const Register = () => {
-  const _700 = useMediaQuery("(min-width:700px)");
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+
   const [signinUser, signinUserData] = useSigninMutation();
   const [loginUser, loginUserData] = useLoginMutation();
 
-  const [login, setLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const toggleLogin = () => {
-    setLogin((pre) => !pre);
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setUserName("");
+    setEmail("");
+    setPassword("");
   };
 
   const handleLogin = async () => {
-    const data = {
-      email,
-      password,
-    };
-    await loginUser(data);
+    await loginUser({ email, password });
   };
 
   const handleRegister = async () => {
-    const data = {
-      userName,
-      email,
-      password,
-    };
-    await signinUser(data);
+    await signinUser({ userName, email, password });
   };
 
   useEffect(() => {
     if (signinUserData?.isSuccess) {
-      toast.success(signinUserData?.data?.msg, {
-        position: "top-center",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-        transition: Bounce,
-      });
-    }
-    if (signinUserData?.isError) {
-      toast.error(signinUserData?.error?.data?.msg, {
-        position: "top-center",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-        transition: Bounce,
-      });
+      toast.success(signinUserData?.data?.msg, { autoClose: 2500, transition: Bounce });
+    } else if (signinUserData?.isError) {
+      toast.error(signinUserData?.error?.data?.msg, { autoClose: 2500, transition: Bounce });
     }
   }, [signinUserData.isSuccess, signinUserData.isError]);
 
   useEffect(() => {
-    if (loginUserData.isSuccess) {
-      toast.success(loginUserData.data.msg, {
-        position: "top-center",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-        transition: Bounce,
-      });
-    }
-    if (loginUserData.isError) {
-      toast.error(loginUserData.error.data.msg, {
-        position: "top-center",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-        transition: Bounce,
-      });
+    if (loginUserData?.isSuccess) {
+      toast.success(loginUserData?.data?.msg, { autoClose: 2500, transition: Bounce });
+    } else if (loginUserData?.isError) {
+      toast.error(loginUserData?.error?.data?.msg, { autoClose: 2500, transition: Bounce });
     }
   }, [loginUserData.isSuccess, loginUserData.isError]);
 
   if (signinUserData.isLoading || loginUserData.isLoading) {
     return (
-      <Stack height={"90vh"} alignItems={"center"} justifyContent={"center"}>
+      <Stack height="100vh" alignItems="center" justifyContent="center">
         <Loading />
       </Stack>
     );
   }
 
   return (
-    <>
-      <Stack
-        width={"100%"}
-        height={"100vh"}
-        flexDirection={"row"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        sx={
-          _700
-            ? {
-                backgroundImage: 'url("/register-bg.webp")',
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "100% 600px",
-              }
-            : null
-        }
+    <Stack
+      direction={{ xs: "column", md: "row" }}
+      sx={{
+        width: "100%",
+        height: "100vh",
+        backgroundColor: "#fafafa",
+      }}
+    >
+      {/* Left Side: Vibrant Gradient */}
+      {isMdUp && (
+        <Box
+          flex={1}
+          sx={{
+            background: "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
+            backgroundSize: "400% 400%",
+            animation: "gradientShift 10s ease infinite",
+          }}
+        />
+      )}
+
+      {/* Right Side: Form Card */}
+      <Box
+        flex={1}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        p={3}
       >
-        <Stack
-          flexDirection={"column"}
-          width={_700 ? "40%" : "90%"}
-          gap={2}
-          mt={_700 ? 20 : 0}
+        <Paper
+          elevation={4}
+          sx={{
+            width: "100%",
+            maxWidth: 420,
+            p: 4,
+            borderRadius: 4,
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+            backdropFilter: "blur(8px)",
+          }}
         >
+          {/* Logo */}
           <Typography
-            variant="h5"
-            fontSize={_700 ? "1.5rem" : "1rem"}
-            fontWeight={"bold"}
-            alignSelf={"center"}
-          >
-            {login ? " Login with email" : " Register with email"}
-          </Typography>
-          {login ? null : (
-            <TextField
-              variant="outlined"
-              placeholder="Enter your Username..."
-              onChange={(e) => setUserName(e.target.value)}
-            />
-          )}
-          <TextField
-            variant="outlined"
-            placeholder="Enter your Email..."
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            placeholder="Enter your Password..."
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            size="large"
+            variant="h3"
+            fontWeight="bold"
+            color="primary"
+            mb={3}
             sx={{
-              width: "100%",
-              height: 52,
-              bgcolor: "green",
-              color: "white",
-              fontSize: "1rem",
-              ":hover": {
-                bgcolor: "blue",
-                cursor: "pointer",
-              },
+              fontFamily: "'Pacifico', cursive",
+              background: "linear-gradient(to right, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textAlign: "center",
             }}
-            onClick={login ? handleLogin : handleRegister}
           >
-            {login ? "Login" : "  Sign Up"}
-          </Button>
-          <Typography
-            variant="subtitle2"
-            fontSize={_700 ? "1.3rem" : "1rem"}
-            alignSelf={"center"}
-          >
-            {login ? "Don`t have an account ?" : " Already have an accout ?"}
-            <span className="login-link" onClick={toggleLogin}>
-              {" "}
-              {login ? "Sign up" : "Login"}
-            </span>
+            Thread
           </Typography>
-        </Stack>
-      </Stack>
-    </>
+
+          <Typography variant="subtitle1" mb={3} textAlign="center">
+            {isLogin ? "Welcome back! Please login" : "Create your account"}
+          </Typography>
+
+          <Stack spacing={2}>
+            {!isLogin && (
+              <TextField
+                label="Username"
+                variant="outlined"
+                fullWidth
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            )}
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              label="Password"
+              variant="outlined"
+              fullWidth
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              onClick={isLogin ? handleLogin : handleRegister}
+              sx={{
+                textTransform: "none",
+                fontWeight: 600,
+                background: "linear-gradient(to right, #f09433, #e6683c, #dc2743)",
+                ":hover": {
+                  background: "linear-gradient(to right, #dc2743, #cc2366)",
+                },
+              }}
+            >
+              {isLogin ? "Log In" : "Sign Up"}
+            </Button>
+          </Stack>
+
+          <Typography mt={3} fontSize="0.9rem" textAlign="center">
+            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+            <Box
+              component="span"
+              onClick={toggleMode}
+              sx={{
+                color: "#dc2743",
+                fontWeight: 600,
+                cursor: "pointer",
+                ml: 1,
+              }}
+            >
+              {isLogin ? "Sign up" : "Login"}
+            </Box>
+          </Typography>
+        </Paper>
+      </Box>
+
+      {/* Keyframe for gradient animation */}
+      <style>
+        {`
+          @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+        `}
+      </style>
+    </Stack>
   );
 };
 
